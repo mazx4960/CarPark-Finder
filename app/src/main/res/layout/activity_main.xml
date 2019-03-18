@@ -4,18 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
         android:text="Hello World!"
+        android:textAlignment="center"
+        android:background="@android:color/holo_orange_light"
+        android:textSize="36sp"
+        android:textColor="@android:color/white"
         android:id="@+id/textView1"/>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="hello world 2"
+        android:textAlignment="center"
+        android:background="@android:color/holo_blue_light"
+        android:textSize="36sp"
+        android:textColor="@android:color/white"
         android:id="@+id/textView2"/>
 
 </LinearLayout>

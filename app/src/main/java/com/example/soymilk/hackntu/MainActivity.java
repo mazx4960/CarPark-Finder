@@ -1,7 +1,9 @@
 package com.example.soymilk.hackntu;
 
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,4 +21,5 @@ public class MainActivity extends AppCompatActivity {
         textView2.setText("dog");
 
     }
+
 }
