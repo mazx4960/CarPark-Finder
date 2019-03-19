@@ -17,8 +17,11 @@ public class Carpark {
         @ColumnInfo(name = "Development")
         public String development;
 
-        @ColumnInfo(name = "Location")
-        public String location;
+        @ColumnInfo(name = "Latitude")
+        public float latitude;
+
+        @ColumnInfo(name = "Longitude")
+        public float longitude;
 
         @ColumnInfo(name = "AvailableLots")
         public int availableLots;
@@ -28,10 +31,11 @@ public class Carpark {
 
         public Carpark(){}
 
-        public Carpark(String carparkID, String development, String location, int availableLots, String lotType) {
+        public Carpark(String carparkID, String development, float latitude, float longitude, int availableLots, String lotType) {
                 CarParkID = carparkID;
                 this.development = development;
-                this.location = location;
+                this.latitude = latitude;
+                this.longitude = longitude;
                 this.availableLots = availableLots;
                 this.lotType = lotType;
         }

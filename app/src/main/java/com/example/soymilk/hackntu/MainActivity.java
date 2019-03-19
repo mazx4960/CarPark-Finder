@@ -86,9 +86,10 @@ public class MainActivity extends AppCompatActivity {
             String carparkID = singleValue.getString("CarParkID");
             String development = singleValue.getString("Development");
             String location = singleValue.getString("Location");
+            float[] floatCoords = parseStringCoords(location);
             int availLots = singleValue.getInt("AvailableLots");
             String lotType = singleValue.getString("LotType");
-            final Carpark newCarpark = new Carpark(carparkID, development, location, availLots, lotType);
+            final Carpark newCarpark = new Carpark(carparkID, development, floatCoords[0], floatCoords[1], availLots, lotType);
 
             AsyncTask task = new AsyncTask() {
                 @Override
@@ -119,12 +120,18 @@ public class MainActivity extends AppCompatActivity {
     // returns float Coords (latitude in zeroth index and longitude in first index)
 
     private float[] parseStringCoords(String stringCoords){
-        String[] coords = stringCoords.split(" ");
-        float latitude = Float.parseFloat(coords[0]);
-        float longitude = Float.parseFloat(coords[1]);
-        Log.d(TAG, latitude + " " + longitude);
-        float[] floatCoords = new float[]{latitude, longitude};
-        return floatCoords;
+        if(stringCoords!="" && stringCoords.contains(" ")){
+            String[] coords = stringCoords.split(" ");
+            float latitude = Float.parseFloat(coords[0]);
+            float longitude = Float.parseFloat(coords[1]);
+            Log.d(TAG, latitude + " " + longitude);
+            float[] floatCoords = new float[]{latitude, longitude};
+            return floatCoords;
+        }else{
+            return new float[]{0,0};
+        }
+
+
     }
 
 
