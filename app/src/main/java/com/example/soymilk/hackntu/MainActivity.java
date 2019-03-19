@@ -29,6 +29,9 @@ import cz.msebera.android.httpclient.Header;
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "FLAG";
     public static final String URL = "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2";
+
+    List<Carpark> listOfNearbyCarparks;
+
     AsyncHttpClient client;
     CarparkDatabase db;
 
@@ -106,15 +109,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void calcBoundaries(String destCoords){
+    private void calcBoundaries(float lat, float lng, float radius){
 
 
+        // TODO: Add formula
 
 
     }
 
-    private void getNearybyCarparks(int radius){
-
+    private void getNearybyCarparks(){
+        AsyncTask task = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                listOfNearbyCarparks = db.carpackDAO().getNearbyCarparks(minlat, maxlat, minlng, minlng);
+                return null;
+            }
+        };
     }
 
     // returns float Coords (latitude in zeroth index and longitude in first index)
@@ -133,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
 
 
 
