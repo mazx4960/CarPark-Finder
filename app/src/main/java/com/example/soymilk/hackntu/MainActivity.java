@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void getAllCarpacks(){
         RequestParams params = new RequestParams();
-        params.put("AccountKey", getString(R.string.key));
-        params.put("accept", "application/json");
+        client.addHeader("AccountKey", getString(R.string.key));
+        client.addHeader("accept", "application/json");
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
