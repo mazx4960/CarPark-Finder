@@ -7,19 +7,27 @@ import androidx.room.PrimaryKey;
 @Entity
 public class Carpark {
         @PrimaryKey
-        public int CarparkID;
+        private int CarparkID;
 
         @ColumnInfo(name = "Development")
-        public String development;
+        private String development;
 
         @ColumnInfo(name = "Location")
-        public String location;
+        private String location;
 
         @ColumnInfo(name = "AvailableLots")
-        public String availableLots;
+        private int availableLots;
 
         @ColumnInfo(name = "LotType")
-        public String lotType;
-    }
+        private String lotType;
+
+        public Carpark(int carparkID, String development, String location, int availableLots, String lotType) {
+                CarparkID = carparkID;
+                this.development = development;
+                this.location = location;
+                this.availableLots = availableLots;
+                this.lotType = lotType;
+        }
+}
 
 
