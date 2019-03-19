@@ -53,10 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
         testView = (TextView)findViewById(R.id.textView);
 
-        db = Room.databaseBuilder(getApplicationContext(), CarparkDatabase.class, "CarparksDB").build();
+        db = Room.databaseBuilder(getApplicationContext(), CarparkDatabase.class, "CarparksDB").allowMainThreadQueries().build();
         client = new AsyncHttpClient();
-        parseStringCoords(dummyDestCoords);
         getAllCarpacks();
+        readFromDatabase();
 
 
     }
@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
         };
+        task.execute();
     }
 
     // returns float Coords (latitude in zeroth index and longitude in first index)
@@ -140,6 +141,15 @@ public class MainActivity extends AppCompatActivity {
         }else{
             return new float[]{0,0};
         }
+
+
+    }
+
+    /**** TEST METHOD ****/
+
+    void readFromDatabase() {
+
+        testView.setText(db.carpackDAO().getAll().get(0).lotType);
 
 
     }
