@@ -1,25 +1,27 @@
 package com.example.soymilk.hackntu;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
 @Entity
 public class Carpark {
         @PrimaryKey
-        private int CarparkID;
+        public int CarparkID;
 
         @ColumnInfo(name = "Development")
-        private String development;
+        public String development;
 
         @ColumnInfo(name = "Location")
-        private String location;
+        public String location;
 
         @ColumnInfo(name = "AvailableLots")
-        private int availableLots;
+        public int availableLots;
 
         @ColumnInfo(name = "LotType")
-        private String lotType;
+        public String lotType;
+
+        public Carpark(){}
 
         public Carpark(int carparkID, String development, String location, int availableLots, String lotType) {
                 CarparkID = carparkID;

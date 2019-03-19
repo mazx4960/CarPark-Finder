@@ -7,24 +7,10 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
+    <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:text="Hello World!"
-        android:textAlignment="center"
-        android:background="@android:color/holo_orange_light"
-        android:textSize="36sp"
-        android:textColor="@android:color/white"
-        android:id="@+id/textView1"/>
+        android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="hello world 2"
-        android:textAlignment="center"
-        android:background="@android:color/holo_blue_light"
-        android:textSize="36sp"
-        android:textColor="@android:color/white"
-        android:id="@+id/textView2"/>
+    </android.support.v4.view.ViewPager>
 
 </LinearLayout>

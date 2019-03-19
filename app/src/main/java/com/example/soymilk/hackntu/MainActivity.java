@@ -1,8 +1,8 @@
 package com.example.soymilk.hackntu;
 
+import android.arch.persistence.room.Room;
 import android.graphics.Color;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -15,18 +15,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import androidx.room.Room;
+import android.arch.persistence.room.Room;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
     public static final String URL = "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2";
     AsyncHttpClient client;
-    CarparkDatabase db = Room.databaseBuilder(getApplicationContext(), CarparkDatabase.class, "CarparksDB").build();
+    CarparkDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        db = Room.databaseBuilder(getApplicationContext(), CarparkDatabase.class, "CarparksDB").build();
         client = new AsyncHttpClient();
 
     }
