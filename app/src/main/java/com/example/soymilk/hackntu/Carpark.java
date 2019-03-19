@@ -3,11 +3,16 @@ package com.example.soymilk.hackntu;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity
 public class Carpark {
-        @PrimaryKey
-        public int CarparkID;
+
+        @PrimaryKey(autoGenerate = true)
+        public int rowId;
+
+        @ColumnInfo(name = "CarParkID")
+        public String CarParkID;
 
         @ColumnInfo(name = "Development")
         public String development;
@@ -23,8 +28,8 @@ public class Carpark {
 
         public Carpark(){}
 
-        public Carpark(int carparkID, String development, String location, int availableLots, String lotType) {
-                CarparkID = carparkID;
+        public Carpark(String carparkID, String development, String location, int availableLots, String lotType) {
+                CarParkID = carparkID;
                 this.development = development;
                 this.location = location;
                 this.availableLots = availableLots;
