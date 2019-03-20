@@ -1,12 +1,15 @@
 package com.example.soymilk.hackntu;
 
 import android.arch.persistence.room.Room;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -24,6 +27,7 @@ public class ResultsActivity extends AppCompatActivity {
     String destName;
 
     List<Carpark> listOfNearbyCarparks;
+    ArrayAdapter<Carpark> carparkArrayAdapter;
 
     // vars for calculating boundary
     double maxlat;
@@ -66,13 +70,7 @@ public class ResultsActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         dropDownBox.setAdapter(adapter);
-        dropDownBox.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                updateUI(position);
-            }
-        });
     }
 
     private void getNearybyCarparks(){
@@ -108,9 +106,38 @@ public class ResultsActivity extends AppCompatActivity {
 
     private void updateUI(int position) {
 
-        //listOfNearbyCarparks.get(position);
+        listOfNearbyCarparks.get(position);
 
 
+    }
+
+    class CarparkAdapter extends ArrayAdapter<Carpark>{
+        public CarparkAdapter(Context context, int resource, List<Carpark> carparkList) {
+            super(context, 0, carparkList);
+        }
+
+        @androidx.annotation.NonNull
+        @Override
+        public View getView(int position, @androidx.annotation.Nullable View convertView, @androidx.annotation.NonNull ViewGroup parent) {
+            View listItemView = convertView;
+            if(convertView == null){
+                listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
+            }
+
+            Carpark carpark = getItem(position);
+
+            /**** findViewById ****/
+            TextView locName = (TextView) findViewById(R.id.locName);
+            TextView price = (TextView) findViewById(R.id.price);
+            TextView availLots = (TextView) findViewById(R.id.availLots);
+
+            locName.setText(carpark.development);
+            price.setText(carpark.lotType); // TODO: set number of dollar signs by lotType
+            availLots.setText(carpark.availableLots);
+
+
+
+        }
     }
 
 
