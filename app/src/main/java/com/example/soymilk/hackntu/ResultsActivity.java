@@ -65,7 +65,7 @@ public class ResultsActivity extends AppCompatActivity {
         destView.setText(destName);
 
         /**** MATH *****/
-        radius = 1.0;
+        radius = 0.3;
         calcBoundaries(destCoords[0], destCoords[1], radius);
 
         /*** getNearbyCarparks ****/
@@ -75,7 +75,7 @@ public class ResultsActivity extends AppCompatActivity {
         radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                radius = progress;
+                radius = progress*0.3;
                 calcBoundaries(destCoords[0], destCoords[1], radius);
                 getNearybyCarparks();
             }
@@ -125,8 +125,6 @@ public class ResultsActivity extends AppCompatActivity {
 
     private void calcBoundaries(double lat, double lng, double radius){
 
-
-        // TODO: Add formula (Done but not tested)
 
         // earth's radius in km = ~6371
         double earthRadius = 6371;
@@ -180,11 +178,26 @@ public class ResultsActivity extends AppCompatActivity {
 
         }
     }
-    // TODO: get distance of Carpark from Destination
+
     private String getCarparkDistance(double latitude, double longitude) {
 
+        double destLat = destCoords[0];
+        double destLng = destCoords[1];
 
-       return "KM";
+        // convert latitude/longitude degrees for both coordinates
+        // to radians: radian = degree * π / 180
+        destLat = Math.toRadians(destLat);
+        destLng = Math.toRadians(destLng);
+        latitude = Math.toRadians(latitude);
+        longitude = Math.toRadians(longitude);
+
+        // calculate great-circle distance
+        double distance = Math.acos(Math.sin(destLat) * Math.sin(latitude) + Math.cos(destLat) * Math.cos(latitude) * Math.cos(destLng - longitude));
+
+        // distance in human-readable format:
+        // earth's radius in km = ~6371
+        double distanceKM = 6371 * distance;
+        return (String.format("%.2f" ,distanceKM));
     }
 
 

@@ -13,6 +13,7 @@
         android:text="MARINA BAY SANDS"
         android:textStyle="bold"
         android:textAllCaps="true"
+        android:textColor="@android:color/black"
         android:gravity="center_vertical"/>
 
     <TextView
@@ -20,6 +21,7 @@
         android:layout_height="match_parent"
         android:id="@+id/price"
         android:text="$$$"
+        android:textColor="@android:color/black"
         android:gravity="center_vertical"
         android:textAlignment="center"/>
 
@@ -28,6 +30,7 @@
         android:layout_height="match_parent"
         android:id="@+id/distance"
         android:text="KM"
+        android:textColor="@android:color/black"
         android:gravity="center_vertical"
         android:textAlignment="center"/>
 
@@ -36,6 +39,7 @@
         android:layout_height="match_parent"
         android:id="@+id/availLots"
         android:text="LOTS"
+        android:textColor="@android:color/black"
         android:gravity="center_vertical"
         android:textAlignment="center"/>
 

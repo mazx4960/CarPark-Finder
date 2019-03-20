@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Hack@NTU</string>
     <string-array name="sorts_array">
-        <item>Avaiability</item>
+        <item>Availability</item>
         <item>Distance</item>
         <item>Cost</item>
     </string-array>
