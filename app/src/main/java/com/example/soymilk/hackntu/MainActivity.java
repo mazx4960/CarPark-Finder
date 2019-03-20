@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         db = Room.databaseBuilder(getApplicationContext(), CarparkDatabase.class, "CarparksDB").allowMainThreadQueries().build();
         client = new AsyncHttpClient();
         getAllCarpacks();
-//        readFromDatabase(); //does not wait for the carparkdb to build first before calling
+        //readFromDatabase(); //does not wait for the carparkdb to build first before calling
 
         Button btnSearch = (Button) findViewById(R.id.btnSearch);
         final EditText searchTerms = (EditText) findViewById(R.id.searchTerms);
@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void parseJsonResponse(JSONObject response) throws JSONException {
+
         final ArrayList<Carpark> listOfCarparks = new ArrayList<>();
         JSONArray values = response.getJSONArray("value");
         for(int i = 0; i < values.length(); i++){
