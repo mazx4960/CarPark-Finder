@@ -14,7 +14,7 @@ public interface CarparkDAO {
     List<Carpark> getAll();
 
     @Query("SELECT * FROM Carpark WHERE (latitude >  :minlat AND latitude < :maxlat) AND (longitude > :minlng AND longitude < :maxlng)")
-    List<Carpark> getNearbyCarparks(float minlat, float maxlat, float minlng, float maxlng);
+    List<Carpark> getNearbyCarparks(double minlat, double maxlat, double minlng, double maxlng);
 
 
     @Insert

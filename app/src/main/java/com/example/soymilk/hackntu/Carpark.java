@@ -18,10 +18,10 @@ public class Carpark {
         public String development;
 
         @ColumnInfo(name = "Latitude")
-        public float latitude;
+        public double latitude;
 
         @ColumnInfo(name = "Longitude")
-        public float longitude;
+        public double longitude;
 
         @ColumnInfo(name = "AvailableLots")
         public int availableLots;
@@ -31,7 +31,7 @@ public class Carpark {
 
         public Carpark(){}
 
-        public Carpark(String carparkID, String development, float latitude, float longitude, int availableLots, String lotType) {
+        public Carpark(String carparkID, String development, double latitude, double longitude, int availableLots, String lotType) {
                 CarParkID = carparkID;
                 this.development = development;
                 this.latitude = latitude;

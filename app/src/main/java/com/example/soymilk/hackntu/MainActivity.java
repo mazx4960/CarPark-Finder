@@ -5,8 +5,12 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -24,6 +28,8 @@ import android.support.v7.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.lang.*;
+
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,18 +39,20 @@ public class MainActivity extends AppCompatActivity {
     List<Carpark> listOfNearbyCarparks;
 
     AsyncHttpClient client;
+    AsyncHttpClient oneMapHttpClient = new AsyncHttpClient();
     CarparkDatabase db;
 
     // vars for calculating boundary
-    float maxlat;
-    float minlat;
-    float maxlng;
-    float minlng;
+    double maxlat;
+    double minlat;
+    double maxlng;
+    double minlng;
 
     TextView testView;
 
-    // TODO: Get REAL coords
-    String dummyDestCoords = "1.29375 103.85718";
+    ArrayList<String> searchSuggestions = new ArrayList<>();
+
+    String realCoords = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +64,107 @@ public class MainActivity extends AppCompatActivity {
         db = Room.databaseBuilder(getApplicationContext(), CarparkDatabase.class, "CarparksDB").allowMainThreadQueries().build();
         client = new AsyncHttpClient();
         getAllCarpacks();
-        readFromDatabase();
+//        readFromDatabase(); //does not wait for the carparkdb to build first before calling
 
+        Button btnSearch = (Button) findViewById(R.id.btnSearch);
+        final EditText searchTerms = (EditText) findViewById(R.id.searchTerms);
 
+        searchTerms.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().length() > 2) {
+                    getLocationSuggestions(s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String search = searchTerms.getText().toString();
+                getLocationCoord(search);
+            }
+        });
+    }
+
+    public void getLocationCoord(String searchTerm){
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("searchVal", searchTerm);
+        requestParams.put("returnGeom", "Y");
+        requestParams.put("getAddrDetails", "Y");
+
+        oneMapHttpClient.get("https://developers.onemap.sg/commonapi/search", requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try{
+                    JSONArray queries = response.getJSONArray("results");
+                    JSONObject oneLocation = queries.getJSONObject(0);
+                    String latitude = oneLocation.getString("LATITUDE");
+                    String longtitude = oneLocation.getString("LONGTITUDE");
+                    realCoords = latitude + " " + longtitude;
+
+                    /**** TESTING ****/
+                    TextView test = (TextView) findViewById(R.id.test);
+                    test.setText(realCoords.toString());
+
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void getLocationSuggestions(String searchTerm){
+
+        // clear the array list of previous search suggestions
+        searchSuggestions.clear();
+
+        String BASE_URL = "https://developers.onemap.sg/commonapi/search";
+
+        RequestParams requestParams = new RequestParams();
+
+        requestParams.put("searchVal", searchTerm);
+        requestParams.put("returnGeom", "Y");
+        requestParams.put("getAddrDetails", "Y");
+
+        oneMapHttpClient.get(BASE_URL, requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try{
+                    parseOneMapJson(response);
+                    // TODO: put the search results into an array adapter to show into the list view
+
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public void parseOneMapJson(JSONObject response) throws JSONException{
+        JSONArray queries = response.getJSONArray("results");
+        for (int i = 0; i < queries.length(); i++){
+            JSONObject oneLocation = queries.getJSONObject(i);
+            String place = oneLocation.getString("SEARCHVAL");
+            searchSuggestions.add(place);
+        }
     }
 
     public void getAllCarpacks(){
         RequestParams params = new RequestParams();
-        client.addHeader("AccountKey", getString(R.string.key));
+        client.addHeader("AccountKey", "GrGTvgRaRiuegLDJjKfKrw==");
         client.addHeader("accept", "application/json");
         client.get(URL, params, new JsonHttpResponseHandler(){
             @Override
@@ -89,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
             String carparkID = singleValue.getString("CarParkID");
             String development = singleValue.getString("Development");
             String location = singleValue.getString("Location");
-            float[] floatCoords = parseStringCoords(location);
+            double[] floatCoords = parseStringCoords(location);
             int availLots = singleValue.getInt("AvailableLots");
             String lotType = singleValue.getString("LotType");
             final Carpark newCarpark = new Carpark(carparkID, development, floatCoords[0], floatCoords[1], availLots, lotType);
@@ -109,10 +210,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void calcBoundaries(float lat, float lng, float radius){
+    private void calcBoundaries(double lat, double lng, double radius){
 
 
-        // TODO: Add formula
+        // TODO: Add formula (Done but not tested)
+
+        // earth's radius in km = ~6371
+        double earthRadius = 6371;
+        double angrad = radius / earthRadius;
+
+        // latitude boundaries
+        maxlat = lat + Math.toDegrees(angrad);
+        minlat = lat - Math.toDegrees(angrad);
+
+        // longitude boundaries (longitude gets smaller when latitude increases)
+        maxlng = lng + Math.toDegrees(angrad / Math.cos(Math.toRadians(lat)));
+        minlng = lng - Math.toDegrees(angrad / Math.cos(Math.toRadians(lat)));
 
 
     }
@@ -130,16 +243,16 @@ public class MainActivity extends AppCompatActivity {
 
     // returns float Coords (latitude in zeroth index and longitude in first index)
 
-    private float[] parseStringCoords(String stringCoords){
+    private double[] parseStringCoords(String stringCoords){
         if(stringCoords!="" && stringCoords.contains(" ")){
             String[] coords = stringCoords.split(" ");
-            float latitude = Float.parseFloat(coords[0]);
-            float longitude = Float.parseFloat(coords[1]);
+            double latitude = Double.parseDouble(coords[0]);
+            double longitude = Double.parseDouble(coords[1]);
             Log.d(TAG, latitude + " " + longitude);
-            float[] floatCoords = new float[]{latitude, longitude};
-            return floatCoords;
+            double[] doubCoords = new double[]{latitude, longitude};
+            return doubCoords;
         }else{
-            return new float[]{0,0};
+            return new double[]{0,0};
         }
 
 
