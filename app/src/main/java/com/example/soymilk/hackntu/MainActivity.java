@@ -9,8 +9,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -54,20 +57,21 @@ public class MainActivity extends AppCompatActivity {
 
     String realCoords = "";
 
+    Button btnSearch;
+    EditText searchTerms;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        testView = (TextView)findViewById(R.id.textView);
 
         db = Room.databaseBuilder(getApplicationContext(), CarparkDatabase.class, "CarparksDB").allowMainThreadQueries().build();
         client = new AsyncHttpClient();
         getAllCarpacks();
         //readFromDatabase(); //does not wait for the carparkdb to build first before calling
 
-        Button btnSearch = (Button) findViewById(R.id.btnSearch);
-        final EditText searchTerms = (EditText) findViewById(R.id.searchTerms);
+        btnSearch = (Button) findViewById(R.id.btnSearch);
+        searchTerms = (EditText) findViewById(R.id.searchTerms);
 
         searchTerms.addTextChangedListener(new TextWatcher() {
             @Override
@@ -114,9 +118,9 @@ public class MainActivity extends AppCompatActivity {
                     String longtitude = oneLocation.getString("LONGTITUDE");
                     realCoords = latitude + " " + longtitude;
 
-                    /**** TESTING ****/
-                    TextView test = (TextView) findViewById(R.id.test);
-                    test.setText(realCoords.toString());
+                    /**** TESTING COMPLETE ****/
+//                    TextView test = (TextView) findViewById(R.id.test);
+//                    test.setText(realCoords.toString());
 
                 } catch (JSONException e){
                     e.printStackTrace();
@@ -144,7 +148,20 @@ public class MainActivity extends AppCompatActivity {
                 super.onSuccess(statusCode, headers, response);
                 try{
                     parseOneMapJson(response);
-                    // TODO: put the search results into an array adapter to show into the list view
+//                    TextView testView = (TextView) findViewById(R.id.test);
+//                    testView.setText(searchSuggestions.get(0));
+
+                    // put the search results into an array adapter to show into the list view
+                    ArrayAdapter<String> Adapter = new ArrayAdapter<>(MainActivity.this,android.R.layout.simple_list_item_1, searchSuggestions);
+                    final ListView searchList = (ListView) findViewById(R.id.searchList);
+                    searchList.setAdapter(Adapter);
+
+                    searchList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            searchTerms.setText(searchSuggestions.get(position));
+                        }
+                    });
 
                 }catch (JSONException e){
                     e.printStackTrace();
@@ -172,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
                 super.onSuccess(statusCode, headers, response);
                 try{
                     parseJsonResponse(response);
-                    testView.setText(response.getJSONArray("value").getJSONObject(0).getString("Development"));
                 }catch (JSONException e){
                     e.printStackTrace();
                 }

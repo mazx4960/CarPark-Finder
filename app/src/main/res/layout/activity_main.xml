@@ -8,13 +8,6 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="48sp"
-        android:text="TextView" />
-
-    <TextView
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_marginTop="48dp"
@@ -48,11 +41,18 @@
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/test"
-        android:text="Test"/>
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/test"-->
+        <!--android:text="Test"/>-->
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/searchList"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"></ListView>
 
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
