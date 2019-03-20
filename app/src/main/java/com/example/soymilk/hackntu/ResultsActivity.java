@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ public class ResultsActivity extends AppCompatActivity {
     ListView listView;
     TextView destView;
     String destName;
+    SeekBar radiusBar;
 
     List<Carpark> listOfNearbyCarparks;
     ArrayAdapter<Carpark> carparkArrayAdapter;
@@ -36,6 +38,11 @@ public class ResultsActivity extends AppCompatActivity {
     double minlng;
 
     double radius;
+
+    /*** TODO:
+     * BUG: Multiple carparks with same Development name
+     *
+     */
 
 
     @Override
@@ -54,14 +61,36 @@ public class ResultsActivity extends AppCompatActivity {
         dropDownBox = (Spinner) findViewById(R.id.spinner);
         listView = (ListView) findViewById(R.id.resultsList);
         destView = (TextView) findViewById(R.id.destination);
+        radiusBar = (SeekBar) findViewById(R.id.seekBar);
         destView.setText(destName);
 
         /**** MATH *****/
-        radius = 1.0; // TODO: Expose to UI for user input
+        radius = 1.0;
         calcBoundaries(destCoords[0], destCoords[1], radius);
 
         /*** getNearbyCarparks ****/
         getNearybyCarparks();
+
+        /*** User input for radius ****/
+        radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                radius = progress;
+                calcBoundaries(destCoords[0], destCoords[1], radius);
+                getNearybyCarparks();
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
 
         /**** SPINNER *****/
         final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -71,14 +100,24 @@ public class ResultsActivity extends AppCompatActivity {
         // Apply the adapter to the spinner
         dropDownBox.setAdapter(adapter);
 
+
     }
 
     private void getNearybyCarparks(){
         AsyncTask task = new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-                listOfNearbyCarparks = db.carpackDAO().getNearbyCarparks(minlat, maxlat, minlng, minlng);
+
+                listOfNearbyCarparks = db.carpackDAO().getNearbyCarparks(minlat, maxlat, minlng, maxlng);
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                super.onPostExecute(o);
+                /***** ListView ****/
+                CarparkAdapter carparkAdapter = new CarparkAdapter(getApplicationContext(), R.layout.list_item, listOfNearbyCarparks);
+                listView.setAdapter(carparkAdapter);
             }
         };
         task.execute();
@@ -116,9 +155,9 @@ public class ResultsActivity extends AppCompatActivity {
             super(context, 0, carparkList);
         }
 
-        @androidx.annotation.NonNull
+
         @Override
-        public View getView(int position, @androidx.annotation.Nullable View convertView, @androidx.annotation.NonNull ViewGroup parent) {
+        public View getView(int position, View convertView,  ViewGroup parent) {
             View listItemView = convertView;
             if(convertView == null){
                 listItemView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
@@ -127,17 +166,25 @@ public class ResultsActivity extends AppCompatActivity {
             Carpark carpark = getItem(position);
 
             /**** findViewById ****/
-            TextView locName = (TextView) findViewById(R.id.locName);
-            TextView price = (TextView) findViewById(R.id.price);
-            TextView availLots = (TextView) findViewById(R.id.availLots);
+            TextView locName = (TextView) listItemView.findViewById(R.id.locName);
+            TextView price = (TextView) listItemView.findViewById(R.id.price);
+            TextView availLots = (TextView) listItemView.findViewById(R.id.availLots);
+            TextView distance = (TextView) listItemView.findViewById(R.id.distance);
 
             locName.setText(carpark.development);
             price.setText(carpark.lotType); // TODO: set number of dollar signs by lotType
-            availLots.setText(carpark.availableLots);
+            availLots.setText(""+carpark.availableLots);
+            distance.setText(getCarparkDistance(carpark.latitude, carpark.longitude));
 
-
+            return listItemView;
 
         }
+    }
+    // TODO: get distance of Carpark from Destination
+    private String getCarparkDistance(double latitude, double longitude) {
+
+
+       return "KM";
     }
 
 
