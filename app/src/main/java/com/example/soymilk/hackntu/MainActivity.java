@@ -1,6 +1,7 @@
 package com.example.soymilk.hackntu;
 
 import android.arch.persistence.room.Room;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -39,11 +41,12 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "FLAG";
     public static final String URL = "http://datamall2.mytransport.sg/ltaodataservice/CarParkAvailabilityv2";
 
-    List<Carpark> listOfNearbyCarparks;
 
     AsyncHttpClient client;
     AsyncHttpClient oneMapHttpClient = new AsyncHttpClient();
     CarparkDatabase db;
+
+    ProgressBar loadingCircle;
 
     // vars for calculating boundary
     double maxlat;
@@ -51,11 +54,14 @@ public class MainActivity extends AppCompatActivity {
     double maxlng;
     double minlng;
 
+    boolean getDestFinish = false;
+
     TextView testView;
 
     ArrayList<String> searchSuggestions = new ArrayList<>();
 
     String realCoords = "";
+    String destName;
 
     Button btnSearch;
     EditText searchTerms;
@@ -72,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnSearch = (Button) findViewById(R.id.btnSearch);
         searchTerms = (EditText) findViewById(R.id.searchTerms);
+        loadingCircle = (ProgressBar) findViewById(R.id.loading);
 
         searchTerms.addTextChangedListener(new TextWatcher() {
             @Override
@@ -95,8 +102,16 @@ public class MainActivity extends AppCompatActivity {
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String search = searchTerms.getText().toString();
-                getLocationCoord(search);
+                destName = searchTerms.getText().toString();
+                getLocationCoord(destName);
+
+                loadingCircle.setVisibility(View.VISIBLE);
+
+
+
+
+
+
             }
         });
     }
@@ -117,6 +132,12 @@ public class MainActivity extends AppCompatActivity {
                     String latitude = oneLocation.getString("LATITUDE");
                     String longtitude = oneLocation.getString("LONGTITUDE");
                     realCoords = latitude + " " + longtitude;
+                    double[] doubleCoords = parseStringCoords(realCoords);
+                    Intent intent = new Intent(MainActivity.this, ResultsActivity.class);
+                    intent.putExtra("destCoords", doubleCoords);
+                    intent.putExtra("destName", destName);
+                    startActivity(intent);
+
 
                     /**** TESTING COMPLETE ****/
 //                    TextView test = (TextView) findViewById(R.id.test);
@@ -227,36 +248,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void calcBoundaries(double lat, double lng, double radius){
 
 
-        // TODO: Add formula (Done but not tested)
 
-        // earth's radius in km = ~6371
-        double earthRadius = 6371;
-        double angrad = radius / earthRadius;
-
-        // latitude boundaries
-        maxlat = lat + Math.toDegrees(angrad);
-        minlat = lat - Math.toDegrees(angrad);
-
-        // longitude boundaries (longitude gets smaller when latitude increases)
-        maxlng = lng + Math.toDegrees(angrad / Math.cos(Math.toRadians(lat)));
-        minlng = lng - Math.toDegrees(angrad / Math.cos(Math.toRadians(lat)));
-
-
-    }
-
-    private void getNearybyCarparks(){
-        AsyncTask task = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] objects) {
-                listOfNearbyCarparks = db.carpackDAO().getNearbyCarparks(minlat, maxlat, minlng, minlng);
-                return null;
-            }
-        };
-        task.execute();
-    }
 
     // returns float Coords (latitude in zeroth index and longitude in first index)
 
@@ -284,6 +278,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        loadingCircle.setVisibility(View.GONE);
+    }
 }

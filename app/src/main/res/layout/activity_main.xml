@@ -54,6 +54,13 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"></ListView>
 
+    <ProgressBar
+        android:id="@+id/loading"
+        style="?android:attr/progressBarStyle"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent">
