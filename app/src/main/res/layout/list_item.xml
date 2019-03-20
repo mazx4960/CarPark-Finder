@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:padding="12dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:id="@+id/locName"
+        android:text="MARINA BAY SANDS"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:id="@+id/price"
+        android:text="$$$"
+        android:gravity="center_vertical"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:id="@+id/distance"
+        android:text="KM"
+        android:gravity="center_vertical"
+        android:textAlignment="center"/>
+
+    <TextView
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:id="@+id/availLots"
+        android:text="LOTS"
+        android:gravity="center_vertical"
+        android:textAlignment="center"/>
+
+</LinearLayout>

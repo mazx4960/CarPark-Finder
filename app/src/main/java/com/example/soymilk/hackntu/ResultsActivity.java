@@ -66,13 +66,13 @@ public class ResultsActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         dropDownBox.setAdapter(adapter);
-        dropDownBox.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                updateUI(position);
-            }
-        });
+//        dropDownBox.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//                updateUI(position);
+//            }
+//        });
     }
 
     private void getNearybyCarparks(){
