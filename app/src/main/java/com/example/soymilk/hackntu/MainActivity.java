@@ -88,7 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().length() > 2) {
+                if (s.toString().length() > 1) {
+                    s.toString().replaceAll("\\s+","");
                     getLocationSuggestions(s.toString());
                 }
             }
@@ -106,12 +107,6 @@ public class MainActivity extends AppCompatActivity {
                 getLocationCoord(destName);
 
                 loadingCircle.setVisibility(View.VISIBLE);
-
-
-
-
-
-
             }
         });
     }
@@ -195,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         JSONArray queries = response.getJSONArray("results");
         for (int i = 0; i < queries.length(); i++){
             JSONObject oneLocation = queries.getJSONObject(i);
-            String place = oneLocation.getString("SEARCHVAL");
+            String place = oneLocation.getString("ADDRESS");
             searchSuggestions.add(place);
         }
     }

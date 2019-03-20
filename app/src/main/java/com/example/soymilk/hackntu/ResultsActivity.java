@@ -145,7 +145,6 @@ public class ResultsActivity extends AppCompatActivity {
 
         listOfNearbyCarparks.get(position);
 
-
     }
 
     class CarparkAdapter extends ArrayAdapter<Carpark>{
